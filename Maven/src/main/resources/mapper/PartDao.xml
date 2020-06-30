@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amane.dao.PartDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	
+	<select id="queryAll" resultType="map">	
+		SELECT
+			c_${type}.*,f.collect_time
+		FROM
+			c_${type}
+			LEFT JOIN (SELECT * FROM f_collect WHERE f_collect.uid = #{uid}) as f on c_${type}.id = f.cid 
+		WHERE
+			kind = #{kind}
+		ORDER BY
+			ppstime DESC 
+		LIMIT 
+			#{offset},#{limit}
+	</select>
+	
+	<select id="queryNav" resultType="nav">
+		<!-- 具体的sql -->
+		SELECT 	
+			*
+		FROM 	
+			s_nav
+		ORDER BY
+			pprank ASC,
+			prank ASC
+	</select>
+	
+	<select id="getType" resultType="String" parameterType="String">
+		<!-- 具体的sql -->
+		SELECT 	
+			type
+		FROM 	
+			s_kind
+		WHERE
+			name = #{listType}
+	</select>
+	
+	<select id="queryAbbr" resultType="map">
+		select 
+			s_field.name,s_field.abbr 
+		from 
+			s_field 
+		union 
+		select 
+			s_kind.name,s_kind.abbr 
+		from 
+			s_kind 
+		union 
+		select 
+			s_subject.name,s_subject.abbr 
+		from s_subject
+	</select>
+	
+	<select id="queryQTNav" resultType="QTNav" parameterType="String">
+		select 
+			s_field.name as field,
+			s_field.rank as pprank,
+			s_subject.name as subject,
+			s_subject.rank as prank,
+			s_point.name as point,
+			s_point.rank as crank
+		from 
+			s_field,s_subject,s_point 
+		where 
+			s_field.name=s_subject.field 
+		and 
+			s_subject.name=s_point.subject 
+		and 
+			s_subject.kind=#{kind}
+		order by 
+			pprank, prank, crank
+	</select>
+	
+	<select id="queryFormatter" resultType="map">
+		select 
+			qformatEN, tformatEN, aformatEN 
+		from 
+			s_kind
+		where
+			s_kind.name=#{kind}
+	</select>
+	
+	<select id="getItems" resultType="int" parameterType="String">
+		<!-- 具体的sql -->
+		SELECT 	
+			count(*)
+		FROM 	
+			c_test
+		WHERE
+			kind = #{kind}
+	</select>
+		
+	<insert id="collectIncrease" parameterType="collect">	
+		INSERT IGNORE INTO
+			f_collect(uid, cid, collect_time)
+		VALUES(
+			#{collect.uid},
+			#{collect.cid},
+			#{collect.time})
+	</insert>
+	
+	<delete id="collectDecrease" parameterType="collect">	
+		DELETE FROM
+			f_collect
+		WHERE
+			f_collect.uid = #{collect.uid}
+		AND
+			f_collect.cid = #{collect.cid}
+	</delete>
+	
+	<select id="queryDetail" resultType="map">
+		select 
+			*
+		from 
+			c_${type}
+		where
+			id=#{id}
+	</select>
+	
+	<select id="queryCreations" resultType="map" parameterType="String">
+		SELECT
+			c_super.id,
+			c_super.type,
+			c_super.ppstime AS time,
+			ifnull( c_test.NAME, c_question.NAME ) AS `name`,
+			ifnull( c_test.kind, c_question.kind ) AS kind 
+		FROM
+			`c_super`
+			LEFT JOIN c_test ON c_super.id = c_test.id
+			LEFT JOIN c_question ON c_super.id = c_question.id 
+		WHERE
+			c_super.ppsr = #{name} 
+			AND c_super.id NOT IN ( SELECT id FROM c_question WHERE c_question.kind <![CDATA[ <> ]]> '集萃' ) 
+		ORDER BY
+			c_super.ppstime DESC
+	</select>
+	
+	<select id="queryCollections" resultType="map" parameterType="String">
+		SELECT
+			f_collect.cid AS id,
+			f_collect.collect_time AS time,
+			c_super.type,
+			ifnull( c_test.NAME, c_question.NAME ) AS `name`,
+			ifnull( c_test.kind, c_question.kind ) AS kind 
+		FROM
+			f_collect
+			LEFT JOIN c_super ON f_collect.cid = c_super.id
+			LEFT JOIN c_test ON f_collect.cid = c_test.id
+			LEFT JOIN c_question ON f_collect.cid = c_question.id 
+		WHERE
+			f_collect.uid = ( SELECT c_user.uid FROM c_user WHERE c_user.NAME = #{name} ) 
+		ORDER BY
+			f_collect.collect_time DESC
+	</select>
+	
+	<select id="queryBlockquotes" resultType="map" parameterType="int">
+		SELECT
+			* 
+		FROM
+			`s_blockquote` 
+			LIMIT 1 OFFSET #{offset}
+	</select>
+	
+	<select id="queryHotspot" resultType="map">
+		SELECT
+			c_super.*,
+			ifnull( c_test.NAME, c_question.NAME ) AS `name`,
+			ifnull( c_test.nums, c_question.type ) AS hs0,
+			ifnull( c_test.duration, c_question.point ) AS hs1,
+			ifnull( c_test.diff, c_question.diff ) AS hs2 
+		FROM
+			c_super
+			LEFT JOIN c_test ON c_super.id = c_test.id
+			LEFT JOIN c_question ON c_super.id = c_question.id 
+		WHERE
+			c_super.id NOT IN ( SELECT id FROM c_question WHERE c_question.kind <![CDATA[ <> ]]> '集萃' ) 
+		ORDER BY
+			ppstime DESC 
+			LIMIT 5
+	</select>	
+	
+	<select id="queryAlert" resultType="map">
+		SELECT
+			c_super.id AS id,
+			c_test.NAME AS NAME,
+			'1' AS type,
+			c_super.ppstime AS time 
+		FROM
+			c_super
+			LEFT JOIN c_test ON c_super.id = c_test.id 
+		WHERE
+			c_super.ppstime > now() UNION
+		SELECT
+			f_mark.tid AS id,
+			c_test.NAME AS NAME,
+			'2' AS type,
+			f_mark.answer_time AS time 
+		FROM
+			f_mark
+			LEFT JOIN c_test ON f_mark.tid = c_test.id 
+		WHERE
+			answer_time > #{user.lastlogin} 
+			AND mark = -1
+			AND tid IN ( SELECT id FROM c_super WHERE ppsr = #{user.name} ) UNION
+		SELECT
+			f_mark.tid AS id,
+			c_test.NAME AS NAME,
+			'3' AS type,
+			f_mark.mark_time AS time 
+		FROM
+			f_mark
+			LEFT JOIN c_test ON f_mark.tid = c_test.id 
+		WHERE
+			mark_time > #{user.lastlogin} 
+			AND mark = -1
+			AND uid = #{user.name} UNION
+		SELECT
+			f_collect.cid AS id,
+			ifnull( c_test.NAME, c_question.NAME ) AS NAME,
+			'4' AS type,
+			f_collect.collect_time AS time 
+		FROM
+			f_collect
+			LEFT JOIN c_test ON f_collect.cid = c_test.id
+			LEFT JOIN c_question ON f_collect.cid = c_question.id 
+		WHERE
+			collect_time > #{user.lastlogin} 
+			AND cid IN (SELECT id FROM c_super WHERE ppsr = #{user.name})	
+		ORDER BY
+			time DESC 
+		LIMIT 8
+	</select>
+	
+	<select id="queryErrors" resultType="map">
+		SELECT
+			* 
+		FROM
+			`s_error` 
+	</select>
+	
+</mapper>

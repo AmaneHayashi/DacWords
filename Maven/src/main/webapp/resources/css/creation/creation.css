@@ -1,0 +1,24 @@
+tr,th{
+	text-align:center;
+	vertical-align:middle;
+}
+
+button.glyphicon{
+	background:transparent;
+}
+
+.glyphicon-wrench,td > .glyphicon-tasks{
+	color:#17a2b8;
+}
+
+.glyphicon-remove{
+	color:#dc3545;
+}
+
+.glyphicon-ok{
+	color:#28a745;
+}
+
+#fail{
+	display:none;
+}

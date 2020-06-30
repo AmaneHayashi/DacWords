@@ -1,0 +1,25 @@
+#button-group > a{
+	width:250px;
+	margin-bottom:20px;
+	border-radius:25px;
+	background-color:transparent;
+	color:black;
+	border:none;
+	float:center;
+	text-align:center;
+}
+
+#button-group > a.btn-active{
+	background:rgb(200,200,200);
+	color:white;
+}
+
+#button-group > a:hover{
+	background:rgb(200,200,200);
+	color:white;
+}
+
+#button-group{
+	float:center;
+	padding-left:15px;
+}

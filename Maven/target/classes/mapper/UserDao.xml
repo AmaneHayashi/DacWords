@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amane.dao.UserDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<select id="queryById" resultType="user" parameterType="String">
+		
+		SELECT 	
+			*
+		FROM 	
+			c_user
+		WHERE 	
+			uid = #{uid}
+	</select>
+
+	<select id="queryByName" resultType="user" parameterType="String">
+		
+		SELECT 	
+			*
+		FROM 	
+			c_user
+		WHERE 	
+			name = #{name}
+		OR 
+			uid = #{name}
+	</select>
+	
+	<select id="getUsers" resultType="int">
+		
+		SELECT 	
+			sum(1)
+		FROM 	
+			c_user
+	</select>
+	
+	<insert id="register" parameterType="user">
+		
+		INSERT IGNORE INTO
+			c_user(uid, name, pswd, registime, lastlogin)
+		VALUES(
+			#{user.uid},
+			#{user.name},
+			#{user.pswd},
+			NOW(),
+			NOW())
+	</insert>
+	
+	<!--  
+	<update id="update" parameterType="user">
+		
+		UPDATE 
+			c_user
+		<set>
+			<if test="user.pswd != null" >
+				pswd = #{user.pswd}
+	      	</if>
+	      	<if test="user.lastlogin != null">
+				AND lastlogin = #{user.lastlogin},
+				thislogin = #{user.thislogin}	      	
+	      	</if>
+	      	<if test="user.colqn != null">
+	      		AND colqn = colqn + 1
+      		</if>
+      		<if test="user.coltn != null">
+      			AND coltn = coltn + 1
+      		</if>
+      		<if test="user.tn != null">
+      			AND tn = tn + 1
+      		</if>
+		</set>
+		WHERE
+			uid = #{user.uid}
+	</update>
+	-->
+	
+	<select id="test" resultType="user">
+		SELECT 
+			name
+		FROM 
+			c_user
+		WHERE 
+			uid = '999'
+	</select>
+	
+	<update id="updateLogin" parameterType="user">
+		UPDATE c_user 
+		SET lastlogin = thislogin, thislogin = NOW()
+		WHERE
+			(uid = #{user.name}  OR name = #{user.name})
+		AND 
+			#{user.pswd} LIKE concat("%",pswd,"%")
+	</update>
+	
+	<select id="getParams" parameterType="String" resultType="map">
+		SELECT
+			ppsn,coln,tn,msgn 
+		FROM
+			`c_user` 
+		WHERE
+			uid = #{uid}
+	</select>
+	
+</mapper>

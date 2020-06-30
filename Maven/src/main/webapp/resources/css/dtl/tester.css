@@ -1,0 +1,83 @@
+span{
+	font-family:"Cambria","Times New Roman"
+}
+h3,h4, h3 > span{
+	font-family:"Century Schoolbook","Times New Roman","STZhongsong",SimHei;
+}
+
+h5{
+	font-family:"Cambria", "STSong";
+}
+
+p,ul{
+	font-family:"Cambria","STSong","KaiTi";
+	font-size:1.1em;
+}
+
+html{
+    background: transparent;
+}
+
+.buttonNext span {
+cursor: pointer;
+display: inline-block;
+position: relative;
+transition: 0.5s;
+}
+
+.buttonNext {
+border: 2px solid #4CAF50;
+float:right;
+}
+.buttonNext span:after {
+position: absolute;
+opacity: 0;
+top: 0;
+transition: 0.5s;
+color:white;
+content: '>>';
+right: -20px;
+}
+.buttonNext:hover{
+background-color: #4CAF50;
+}
+.buttonNext:hover span {
+padding-right: 25px;
+color:white;
+}
+.buttonNext:hover span:after{
+right: 0;
+opacity: 1;
+}
+
+input{
+	width:150px;
+	border:none;
+	border-bottom:0.5px solid;
+	outline:none;
+	text-align:center;
+	background:#eeeeee;
+	font-weight:bold;
+}
+
+#clock{
+	position:fixed; 
+	bottom:50px;
+	right:50px;
+}
+
+#clock > span{
+	text-shadow: 0 0 8px;
+}
+
+#q-group-left{
+	position:fixed;
+	top:160px;
+	right:80px;
+}
+
+#q-group-right{
+	position:fixed;
+	top:160px;
+	right:40px;
+}

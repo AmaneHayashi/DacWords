@@ -1,0 +1,121 @@
+html,body{
+	height:100%;
+    overflow: hidden; 
+    margin:0;
+    padding: 0;
+}
+input,a,span,label,.tooltip{
+	text-shadow: 0 0 6px;
+	font-weight: 100;
+	font-size:0.85em;
+	font-family:Arial,Verdana,Sans-serif;
+}
+#container{
+    width:100%;
+    height: 100%;
+    display: table;
+}
+
+::selection
+{
+text-decoration:none;
+}
+::-moz-selection
+{
+text-decoration:none;
+}
+
+.middle{
+	/*背景图片地址*/
+	background-image:url("../../images/bg.jpg");
+	/*让整个div跟屏幕实现一模一样的大小*/
+	width:100%;
+	height:100%;
+	/*屏幕宽度在500px以内时，div的大小保持不变*/
+	min-width: 500px;
+	/*确保整个div在最下面*/
+	z-index:-10;
+	zoom: 1;
+	background-color: #fff;
+	/*背景不要重复*/
+	background-repeat: no-repeat;
+	/*图片随屏幕大小同步缩放*/
+	background-size: cover;
+	-webkit-background-size: cover;
+	-o-background-size: cover;
+	/*居中，靠左对齐*/
+	background-position: center 0;
+	
+   	display:table-cell;
+   	vertical-align: middle;
+  	text-align: center; 
+}
+.inner{
+    width:500px;
+    margin: auto;
+    padding: 50px;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    vertical-align: middle;
+    background-color: transparent;
+    /* 实现水平垂直居中*/
+    display: inline-block;
+}
+.active{
+    color: #44D4C1;
+    border-bottom: 2px solid #44D4C1;
+}
+.unactive{
+    color: #D8D8D8;
+}
+.inner > h5 > a{
+	padding-bottom:10px;
+	margin:50px;
+	text-decoration:none;
+}
+.inner > h5 > a:hover{
+	color: #44D4C1;
+	outline:none;
+	text-decoration:none;
+	border-bottom: 2px solid #44D4C1;
+}
+.inner > h5 > a:focus{
+	text-decoration:none;
+	color:#44D4C1;
+	outline:none;
+}
+.inner > form > input{
+	margin: 30px 30px 0px 0px;
+	width:300px;
+	border:none;
+	outline:none;
+	background:transparent;
+	caret-color:transparent;
+	color: #44D4C1;
+}
+.inner > form > input::-webkit-input-placeholder{
+	
+    color: #44D4C1;
+}
+.inner > form > span{
+
+	background:transparent;
+	color:#44D4C1;
+	margin-right:10px;
+}
+.inner > form > button{
+	font-size:1.0em;
+	background:transparent;
+	margin:20px auto 0px auto;
+	border:0.5px solid #44D4C1;
+	border-radius:16px;
+	width:150px;
+	color:#48D8C5;
+	outline:none;
+	box-shadow: 0 0 6px rgba(68,212,193,0.5);
+}
+.inner > span{
+	float:left;
+	margin:20px auto 0 35px;
+	display:none;
+}

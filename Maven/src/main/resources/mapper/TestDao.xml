@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amane.dao.TestDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<insert id="register" parameterType="test">
+		INSERT IGNORE INTO
+			c_test
+		VALUES(
+			#{test.id},
+			#{test.name},
+			#{test.kind},
+			#{test.field},
+			#{test.subject},
+			#{test.diff},
+			#{test.nums},
+			#{test.ppsr},
+			#{test.ppstime},
+			#{test.duration},
+			#{test.fullmark})
+	</insert>
+
+	<insert id="registerMark" parameterType="mark">
+		INSERT IGNORE INTO
+			f_mark(uid, tid, mark)
+		VALUES(
+			#{mark.uid}, #{mark.tid}, #{mark.marks})
+	</insert>
+	
+	<update id="updateMark" parameterType="mark">
+		UPDATE 
+			f_mark
+		<set>
+			mark = #{mark.marks}
+		</set>
+		WHERE
+			tid = #{mark.tid}
+		AND
+			uid = #{mark.uid}
+	</update>
+	
+		
+	<select id="queryGradeDeparter" parameterType="String" resultType="map">
+		select distinct 
+			c_user.uid, 
+			f_mark.mark,
+			f_grade.answer_time,
+			c_test.id,
+			c_test.fullmark,
+			c_user.name as uname,
+			c_test.name as tname
+		from 
+			f_mark 
+		inner join
+			f_grade
+		on
+			f_grade.qid in (f_mark.tid + '%')
+		inner join 
+			c_user 
+		on 
+			c_user.uid = f_mark.uid 
+		inner join 
+			c_test 
+		on 
+			c_test.id = f_mark.tid 
+		where 
+			c_test.ppsr = #{name}
+		order by
+			answer_time 
+	</select>
+
+	<select id="queryMarkDeparter" parameterType="String" resultType="map">
+		select distinct 
+			c_user.uid, 
+			f_mark.mark,
+			f_grade.answer_time,
+			c_test.id,
+			c_test.ppsr,
+			c_test.fullmark,
+			c_user.name as uname,
+			c_test.name as tname
+		from 
+			f_mark 
+		inner join
+			f_grade
+		on
+			f_grade.qid in (f_mark.tid + '%')
+		inner join 
+			c_user 
+		on 
+			c_user.uid = f_mark.uid 
+		inner join 
+			c_test 
+		on 
+			c_test.id = f_mark.tid 
+		where 
+			c_user.name = #{name}
+		order by
+			answer_time 
+	</select>
+	
+</mapper>

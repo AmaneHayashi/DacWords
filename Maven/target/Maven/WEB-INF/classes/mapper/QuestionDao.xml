@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amane.dao.QuestionDao">
+	<!-- 目的：为dao接口方法提供sql语句配置 -->
+	<!--  	<insert id="register" parameterType="question">
+		INSERT IGNORE INTO
+			c_question
+		VALUES(
+			#{question.id},
+			#{question.name},
+			#{question.kind},
+			#{question.field},
+			#{question.subject},
+			#{question.point},
+			#{question.type},
+			#{question.diff},
+			#{question.ppsr},
+			#{question.ppstime},
+			#{question.content},
+			#{question.optionA},
+			#{question.optionB},
+			#{question.optionC},
+			#{question.optionD},
+			#{question.key},
+			#{question.solution},
+			#{question.picpath})
+	</insert>
+	-->
+	<select id="queryById" resultType="question" parameterType="String">
+		SELECT 	
+			*
+		FROM 	
+			c_question 
+		WHERE 	
+			id = #{id}
+	</select>
+	
+	<select id="queryByTid" resultType="question" parameterType="String">
+		SELECT 	
+			*
+		FROM 	
+			c_question
+		WHERE 	
+			id like '%${id}%'
+		ORDER BY
+			id
+	</select>
+	<!-- 
+	更改为直接batchInsert?
+	<update id="batchUpdateQid" parameterType="java.util.List">
+	    update
+	        c_question
+	    set
+	        id = CASE
+	        <foreach collection="list" item="q" index="index">
+	            <if test="q.id!= null and q.id!= ''">
+	                when uuid = #{q.uuid} then #{q.id}
+	            </if>
+	        </foreach>
+	        END
+	    WHERE
+	        uuid in
+	        <foreach collection="list" item="q" index="index" open="(" separator="," close=")">
+	            #{q.uuid}
+	        </foreach>
+	</update>
+	 -->
+	<insert id="batchRegisterGrade" parameterType="java.util.List">
+	    insert into
+	        f_grade (uid, qid, answer, grade, answer_time)
+	    values
+        <foreach collection="list" item="g" index="index">
+        	(#{g.uid},#{g.qid},#{g.answer}, -1, #{g.answer_time})
+			<choose>  
+	        	<when test="index != list.size() - 1">  
+	                ,
+	            </when >   
+	            <otherwise>  
+	            	;
+	            </otherwise>  
+	        </choose>  
+        </foreach>
+	</insert>
+	
+	<select id="queryJudgeByTid" resultType="map" parameterType="String">
+		SELECT
+			SUBSTRING(c_question.id, 13) as id,
+			c_question.`key`,
+			f_grade.answer,
+			f_grade.grade
+		FROM
+			c_question
+		INNER JOIN 
+			f_grade 
+		ON 
+			f_grade.qid = c_question.id 
+		WHERE
+			f_grade.uid = #{uid}
+		AND 
+			c_question.id LIKE '%${id}%'
+		ORDER BY
+			id
+	</select>
+
+	<update id="batchUpdateGrade" parameterType="java.util.List">
+	    update
+	        f_grade
+	    set
+	        grade = CASE
+	        <foreach collection="list" item="g" index="index">
+	            <if test="g.id!= null and g.id!= ''">
+	                when uid = #{g.uid} and id = #{g.id} then #{g.grade}
+	            </if>
+	        </foreach>
+	        END
+	    WHERE
+	        qid in
+	        <foreach collection="list" item="g" index="index" open="(" separator="," close=")">
+	            #{g.id}
+	        </foreach>
+	    AND 
+	    	uid in
+	         <foreach collection="list" item="g" index="index" open="(" separator="," close=")">
+	            #{g.uid}
+	        </foreach>
+	</update>
+	
+	<select id="queryQInfo" parameterType="String" resultType="map">
+		SELECT
+			* 
+		FROM 
+			(SELECT 
+				count(*) AS increment 
+			FROM 
+				c_question 
+			WHERE 
+				c_question.kind = #{kind} AND c_question.id LIKE '%${oid}%' ) 
+			AS increment,
+			(SELECT
+				substr(s_kind.qformatEN,char_length( s_kind.qformatEN )) AS suffix 
+			FROM
+				s_kind 
+			WHERE
+				s_kind.NAME = #{kind}) 
+			AS suffix
+	</select>
+
+		<insert id="batchInsert" parameterType="java.util.List">
+		INSERT INTO
+			c_question
+		VALUES
+   			<foreach collection="list" item="question" index="index" separator=",">
+			(
+				#{question.id},
+				#{question.name},
+				#{question.kind},
+				#{question.field},
+				#{question.subject},
+				#{question.point},
+				#{question.type},
+				#{question.diff},
+				#{question.ppsr},
+				#{question.ppstime},
+				#{question.content},
+				#{question.optionA},
+				#{question.optionB},
+				#{question.optionC},
+				#{question.optionD},
+				#{question.key},
+				#{question.solution},
+				#{question.picpath}
+			)
+   		    </foreach>		
+    </insert> 
+
+</mapper>

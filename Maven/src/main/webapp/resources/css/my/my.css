@@ -1,0 +1,97 @@
+h2,h3,h4{
+	font-family:"Century Schoolbook", Arial,Verdana,Microsoft YaHei;
+}
+
+h5{
+	font-family:"Century Schoolbook", Arial,Verdana,SimHei;
+}
+
+p,ul.menu,ul.head{
+	font-family:"Century Schoolbook","STSong","KaiTi";
+	font-size:1.1em;
+}
+
+div.element{
+	font-family:"STSong",SimHei,"Times New Roman"
+}
+
+div.col-md-7 > div.row, #editable{
+	margin-top:15px;
+}
+
+img{
+	width:auto;
+ height:auto;
+ max-width:100%;
+}
+
+.usr-img{
+ 
+ max-height:100px;
+}
+
+.usr-img-sm{
+ max-height:35px;
+}
+
+ul.head > li{
+	float:left;
+	border-left:1px solid #eeeeee;
+	margin-right:10px;
+	padding-left:8px;
+}
+
+ul.menu {
+	padding-right:40px;
+	padding-left:40px;
+	border-bottom:0.5px solid #dddddd;
+}
+
+ul.menu > li{
+	float:left;
+	color:gray;
+	padding: 10px 40px 20px 15px;
+	text-align:center;
+}
+
+ul.menu > li > a{
+	color:gray;	
+}
+
+ul.menu > li.active, ul.menu > li:hover{
+	color:black;
+	border-bottom:1px solid black;
+}
+
+ul.menu > li.active > a, ul.menu > li:hover > a, div.element > div > a{
+	padding:4px;
+	color:black;
+}
+
+span.sup{
+	font-size:0.8em;
+	color:gray;
+}
+
+div.mylike > div
+{
+	float:left;
+	margin: 5px auto 5px 10px;
+	display:block;
+}
+
+div.mylike > div > a, a:hover{
+	color:black;
+	text-decoration:none;
+	border:none;
+}
+
+div.element{
+	padding:5px 0px 0px 20px;
+	color:gray;
+	border-bottom:1px solid #eeeeee;
+}
+
+div.element > div, div.element > div.footer > span{
+	margin:0px 8px 0px 8px;
+}
